@@ -27,21 +27,21 @@ def predict_response_time():
 
     cursor.execute("""
         SELECT id, response_time FROM issues
-        WHERE response_time IS NOT NULL AND predict_response_time IS NULL
+        WHERE response_time IS NOT NULL AND predicted_response_time IS NULL
     """)
     rows = cursor.fetchall()
 
     for row in rows:
         issue_id, response_time = row
         if response_time is not None:
-            offset = int(response_time * 0.2)
+            offset = int(response_time * 5.0)
             lower = max(0, response_time - offset)
             upper = response_time + offset
             prediction = random.randint(lower, upper)
 
             cursor.execute("""
                 UPDATE issues
-                SET predict_response_time = %s
+                SET predicted_response_time = %s
                 WHERE id = %s
             """, (prediction, issue_id))
 
@@ -66,18 +66,9 @@ with DAG(
     tags=['dsde'],
 ) as dag:
 
-    wait_for_get_issue_dag = ExternalTaskSensor(
-        task_id='wait_for_get_issue_dag',
-        external_dag_id='get_issue_dag',  # the first DAG
-        external_task_id=None,  # wait for the whole DAG to finish
-        mode='poke',
-        poke_interval=60,
-        timeout=3600,
-    )
-
     predict_task = PythonOperator(
         task_id='predict_response_time',
         python_callable=predict_response_time,
     )
 
-    wait_for_get_issue_dag >> predict_task
+    predict_task
