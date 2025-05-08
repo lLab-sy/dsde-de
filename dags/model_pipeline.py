@@ -26,9 +26,9 @@ prefix_path = "/opt/airflow/dags/models/"
 
 mlb_path = prefix_path + "mlb.pkl"
 enc_path = prefix_path + "enc.pkl"
-tfidf_path = prefix_path + "tfidf_vectorizer.pkl"
+tfidf_path = prefix_path + "tfidf.pkl"
 selector_path = prefix_path + "selector.pkl"
-model_path = prefix_path + "today.pkl"
+model_path = prefix_path + "model.pkl"
 
 
 # === Custom Preprocessing Transformers ===
