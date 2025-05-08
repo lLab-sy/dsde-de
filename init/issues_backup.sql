@@ -23,7 +23,10 @@ SET default_table_access_method = heap;
 --
 -- Name: issues; Type: TABLE; Schema: public; Owner: airflow
 --
+SET search_path TO public;
 
+CREATE EXTENSION IF NOT EXISTS postgis;
+CREATE EXTENSION IF NOT EXISTS postgis_topology;
 CREATE TABLE public.issues (
     id integer NOT NULL,
     message_id integer NOT NULL,
