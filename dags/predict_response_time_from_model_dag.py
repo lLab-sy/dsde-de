@@ -83,15 +83,15 @@ def etl_postgres_pipeline():
     #         )
     #     conn.commit()
     
-    with engine.begin() as conn:
-        cursor = conn.cursor()
-        for _, row in df_result.iterrows():
-            cursor.execute("""
-                UPDATE issues
-                SET predicted_response_time = %s
-                WHERE id = %s
-            """, (row['predicted_response_time'], row['id']))
-        conn.commit()
+    cursor = engine.cursor()
+    for _, row in df_result.iterrows():
+        cursor.execute("""
+            UPDATE issues
+            SET predicted_response_time = %s
+            WHERE id = %s
+        """, (row['predicted_response_time'], row['id']))
+    
+    engine.commit()
     
     # OR to update existing table row-by-row:
     # with engine.begin() as conn:
